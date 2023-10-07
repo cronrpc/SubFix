@@ -22,8 +22,7 @@ g_data_json = []
 
 
 def reload_data(index, batch):
-    global g_index, g_max_json_index
-    g_max_json_index = len(g_data_json)-1
+    global g_index
     g_index = index
     global g_batch
     g_batch = batch
@@ -68,7 +67,7 @@ def b_previous_index(index, batch):
     if (index - batch) >= 0:
         return index - batch , *b_change_index(index - batch, batch)
     else:
-        return index, *b_change_index(0, batch)
+        return 0, *b_change_index(0, batch)
 
 
 def b_submit_change(*text_list):
@@ -81,13 +80,18 @@ def b_submit_change(*text_list):
 
 
 def b_delete_audio(*checkbox_list):
-    global g_data_json
+    global g_data_json, g_index, g_max_json_index
 
     for i, checkbox in reversed(list(enumerate(checkbox_list))):
         if g_index + i < len(g_data_json):
             if (checkbox == True):
                 g_data_json.pop(g_index + i)
-    return g_index, *b_change_index(g_index, g_batch)
+    
+    g_max_json_index = len(g_data_json)-1
+    if g_index > g_max_json_index:
+        g_index = g_max_json_index
+        g_index = g_index if g_index >= 0 else 0
+    return gr.Slider(value=g_index, maximum=(g_max_json_index if g_max_json_index>=0 else 0)), *b_change_index(g_index, g_batch)
 
 
 def b_invert_selection(*checkbox_list):
@@ -96,7 +100,7 @@ def b_invert_selection(*checkbox_list):
 
 
 def b_merge_audio(interval_r, *checkbox_list):
-    global g_data_json
+    global g_data_json , g_max_json_index
     checked_index = []
     audios_path = []
     audios_text = []
@@ -131,8 +135,10 @@ def b_merge_audio(interval_r, *checkbox_list):
         soundfile.write(base_path, audio_concat, l_sample_rate)
 
         b_save_file()
-
-    return g_index, *b_change_index(g_index, g_batch)
+    
+    g_max_json_index = len(g_data_json) - 1
+    
+    return gr.Slider(value=g_index, maximum=g_max_json_index), *b_change_index(g_index, g_batch)
 
 
 def b_save_json():
@@ -156,7 +162,7 @@ def b_load_json():
     with open(g_load_file, 'r', encoding="utf-8") as file:
         g_data_json = file.readlines()
         g_data_json = [json.loads(line) for line in g_data_json]
-        g_max_json_index = len(g_data_json)-1
+        g_max_json_index = len(g_data_json) - 1
 
 
 def b_load_list():
@@ -177,7 +183,7 @@ def b_load_list():
                 )
             else:
                 print("error line:", data)
-        g_max_json_index = len(g_data_json)
+        g_max_json_index = len(g_data_json) - 1
 
 
 def b_save_file():
