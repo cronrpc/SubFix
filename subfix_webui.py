@@ -9,8 +9,8 @@ import soundfile
 
 g_json_key_text = ""
 g_json_key_path = ""
-g_source_json = ""
-g_target_json = ""
+g_load_file = ""
+g_load_format = ""
 
 g_max_json_index = 0
 g_index = 0
@@ -22,9 +22,10 @@ g_data_json = []
 
 
 def reload_data(index, batch):
-    global g_index
+    global g_index, g_max_json_index
+    g_max_json_index = len(g_data_json)-1
     g_index = index
-    global g_batch 
+    global g_batch
     g_batch = batch
     datas = g_data_json[index:index+batch]
     output = []
@@ -45,13 +46,13 @@ def b_change_index(index, batch):
     output = []
     for _ in datas:
         output.append(_[g_json_key_text])
-    for _ in range(10 - len(datas)):
+    for _ in range(g_batch - len(datas)):
         output.append(None)
     for _ in datas:
         output.append(_[g_json_key_path])
-    for _ in range(10 - len(datas)):
+    for _ in range(g_batch - len(datas)):
         output.append(None)
-    for _ in range(10):
+    for _ in range(g_batch):
         output.append(False)
     return output
 
@@ -89,6 +90,11 @@ def b_delete_audio(*checkbox_list):
     return g_index, *b_change_index(g_index, g_batch)
 
 
+def b_invert_selection(*checkbox_list):
+    new_list = [not item if item is True else True for item in checkbox_list]
+    return new_list
+
+
 def b_merge_audio(interval_r, *checkbox_list):
     global g_data_json
     checked_index = []
@@ -124,63 +130,123 @@ def b_merge_audio(interval_r, *checkbox_list):
 
         soundfile.write(base_path, audio_concat, l_sample_rate)
 
-        b_save_json()
+        b_save_file()
 
     return g_index, *b_change_index(g_index, g_batch)
 
 
 def b_save_json():
-    with open(g_target_json,'w', encoding="utf-8") as file:
+    with open(g_load_file,'w', encoding="utf-8") as file:
         for data in g_data_json:
             file.write(f'{json.dumps(data, ensure_ascii = False)}\n')
 
 
-def set_global(source_json, target_json, json_key_text, json_key_path):
-    global g_json_key_text, g_json_key_path, g_source_json, g_target_json
+def b_save_list():
+    with open(g_load_file,'w', encoding="utf-8") as file:
+        for data in g_data_json:
+            wav_path = data["wav_path"]
+            speaker_name = data["speaker_name"]
+            language = data["language"]
+            text = data["text"]
+            file.write(f"{wav_path}|{speaker_name}|{language}|{text}".strip()+'\n')
+
+
+def b_load_json():
+    global g_data_json, g_max_json_index
+    with open(g_load_file, 'r', encoding="utf-8") as file:
+        g_data_json = file.readlines()
+        g_data_json = [json.loads(line) for line in g_data_json]
+        g_max_json_index = len(g_data_json)-1
+
+
+def b_load_list():
+    global g_data_json, g_max_json_index
+    with open(g_load_file, 'r', encoding="utf-8") as source:
+        data_list = source.readlines()
+        for _ in data_list:
+            data = _.split('|')
+            if (len(data) == 4):
+                wav_path, speaker_name, language, text = data
+                g_data_json.append(
+                        {
+                            'wav_path':wav_path,
+                            'speaker_name':speaker_name,
+                            'language':language,
+                            'text':text.strip()
+                        }
+                )
+            else:
+                print("error line:", data)
+        g_max_json_index = len(g_data_json)
+
+
+def b_save_file():
+    if g_load_format == "json":
+        b_save_json()
+    elif g_load_format == "list":
+        b_save_list()
+
+
+def b_load_file():
+    if g_load_format == "json":
+        b_load_json()
+    elif g_load_format == "list":
+        b_load_list()
+
+
+def set_global(load_json, load_list, json_key_text, json_key_path, batch):
+    global g_json_key_text, g_json_key_path, g_load_file, g_load_format, g_batch
+
+    g_batch = int(batch)
     
-    assert(source_json != "None")
-
-    if (target_json == "None"):
-        target_json = source_json
-
-    g_source_json = source_json
-    g_target_json = target_json
+    if (load_json != "None"):
+        g_load_format = "json"
+        g_load_file = load_json
+    elif (load_list != "None"):
+        g_load_format = "list"
+        g_load_file = load_list
+    else:
+        g_load_format = "list"
+        g_load_file = "demo.list"
+        
     g_json_key_text = json_key_text
     g_json_key_path = json_key_path
+
+    b_load_file()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--source_json', default="None", help='source file xxx.json')
-    parser.add_argument('--target_json', default="None", help='target file xxx.json will be save')
+    parser.add_argument('--load_json', default="None", help='source file, like demo.json')
+    parser.add_argument('--load_list', default="None", help='source file, like demo.list')
     parser.add_argument('--json_key_text', default="text", help='the text key name in json, maybe is text')
     parser.add_argument('--json_key_path', default="wav_path", help='the path key name in json, maybe is wav_path')
+    parser.add_argument('--g_batch', default=10, help='max number g_batch wav to display')
 
     args = parser.parse_args()
 
-    set_global(args.source_json, args.target_json, args.json_key_text, args.json_key_path)
-
-    with open(g_source_json, 'r', encoding="utf-8") as file:
-        g_data_json = file.readlines()
-        g_data_json = [json.loads(line) for line in g_data_json]
-        g_max_json_index = len(g_data_json)-1
+    set_global(args.load_json, args.load_list, args.json_key_text, args.json_key_path, args.g_batch)
     
     with gr.Blocks() as demo:
 
         with gr.Row():
+            btn_change_index = gr.Button("Change Index")
+            btn_submit_change = gr.Button("Submit Text")
+            btn_merge_audio = gr.Button("Merge Audio")
+            btn_delete_audio = gr.Button("Delete Audio")
+            btn_previous_index = gr.Button("Previous Index")
+            btn_next_index = gr.Button("Next Index")
+            
+        with gr.Row():
             index_slider = gr.Slider(
                     minimum=0, maximum=g_max_json_index, value=g_index, step=1, label="Index", scale=4
             )
-            batchsize_slider = gr.Slider(
-                    minimum=1, maximum=10, value=g_batch, step=1, label="Batch Size", scale=2, interactive=False
-            )
-            interval_slider = gr.Slider(
-                    minimum=0, maximum=2, value=0, step=0.01, label="Interval", scale=2
-            ) 
-
+            btn_save_json = gr.Button("Save json", scale=2)
+            btn_invert_selection = gr.Button("Invert Selection", scale=2)
+        
         with gr.Row():
             with gr.Column():
-                for _ in range(0,10):
+                for _ in range(0,g_batch):
                     with gr.Row():
                         text = gr.Textbox(
                             label = "Text",
@@ -201,18 +267,17 @@ if __name__ == "__main__":
                         g_text_list.append(text)
                         g_audio_list.append(audio_output)
                         g_checkbox_list.append(audio_check)
-    
-        with gr.Row():
-            btn_change_index = gr.Button("Change Index")
-            btn_submit_change = gr.Button("Submit Change")
-            btn_merge_audio = gr.Button("Merge Audio")
-            btn_delete_audio = gr.Button("Delete Audio")
-            btn_previous_index = gr.Button("Previous Index")
-            btn_next_index = gr.Button("Next Index")
-            
-        with gr.Row():
-            btn_save_json = gr.Button("Save json")
 
+
+
+        with gr.Row():
+            batchsize_slider = gr.Slider(
+                    minimum=1, maximum=g_batch, value=g_batch, step=1, label="Batch Size", scale=2, interactive=False
+            )
+            interval_slider = gr.Slider(
+                    minimum=0, maximum=2, value=0, step=0.01, label="Interval", scale=2
+            ) 
+        
         btn_change_index.click(
             b_change_index,
             inputs=[
@@ -295,8 +360,18 @@ if __name__ == "__main__":
             ]
         )
 
+        btn_invert_selection.click(
+            b_invert_selection,
+            inputs=[
+                *g_checkbox_list
+            ],
+            outputs=[
+                *g_checkbox_list
+            ]
+        )
+
         btn_save_json.click(
-            b_save_json
+            b_save_file
         )
 
         demo.load(
