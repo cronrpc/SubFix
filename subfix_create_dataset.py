@@ -32,14 +32,16 @@ def resample_audios(origin_dir, resample_dir, sample_rate):
         source_dir = os.path.join(origin_dir, dir)
         target_dir = os.path.join(resample_dir, dir)
         os.makedirs(target_dir, exist_ok=True)
-        for f in os.listdir(source_dir):
+        listdir = list(os.listdir(source_dir))
+        listdir_len = len(listdir)
+        for index, f in enumerate(listdir, start=1):
             if f.endswith(".wav") or f.endswith(".mp3"):
                 file_path = os.path.join(source_dir, f)
                 target_path = os.path.join(target_dir, f)
                 target_path = os.path.splitext(target_path)[0] + '.wav'
                 process = subprocess.run(["ffmpeg", "-y", "-i", file_path, "-ar", f"{sample_rate}", "-ac", "1", "-v", "quiet", target_path])
                 if process.returncode == 0:
-                    print("..",end="")
+                    print(f"{index}/{listdir_len} file")
                 else:
                     print(f"\n{file_path} convert fail.")
 
