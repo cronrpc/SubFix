@@ -1,6 +1,8 @@
 import argparse
+import copy
 import json
 import os
+import uuid
 
 import librosa
 import gradio as gr
@@ -43,10 +45,20 @@ def b_change_index(index, batch):
     g_index, g_batch = index, batch
     datas = reload_data(index, batch)
     output = []
-    for _ in datas:
-        output.append(_[g_json_key_text])
+    for i , _ in enumerate(datas):
+        output.append(
+            gr.Textbox(
+                label=f"Text {i+index}",
+                value=_[g_json_key_text]
+            )
+            )
     for _ in range(g_batch - len(datas)):
-        output.append(None)
+        output.append(
+            gr.Textbox(
+                label=f"Text",
+                value=""
+            )
+        )
     for _ in datas:
         output.append(_[g_json_key_path])
     for _ in range(g_batch - len(datas)):
@@ -72,25 +84,33 @@ def b_previous_index(index, batch):
 
 def b_submit_change(*text_list):
     global g_data_json
+    change = False
     for i, new_text in enumerate(text_list):
         if g_index + i <= g_max_json_index:
             new_text = new_text.strip()+' '
-            g_data_json[g_index + i][g_json_key_text] = new_text
+            if (g_data_json[g_index + i][g_json_key_text] != new_text):
+                g_data_json[g_index + i][g_json_key_text] = new_text
+                change = True
+    if change:
+        b_save_file()
     return g_index, *b_change_index(g_index, g_batch)
 
 
 def b_delete_audio(*checkbox_list):
     global g_data_json, g_index, g_max_json_index
-
+    change = False
     for i, checkbox in reversed(list(enumerate(checkbox_list))):
         if g_index + i < len(g_data_json):
             if (checkbox == True):
                 g_data_json.pop(g_index + i)
+                change = True
     
     g_max_json_index = len(g_data_json)-1
     if g_index > g_max_json_index:
         g_index = g_max_json_index
         g_index = g_index if g_index >= 0 else 0
+    if change:
+        b_save_file()
     return gr.Slider(value=g_index, maximum=(g_max_json_index if g_max_json_index>=0 else 0)), *b_change_index(g_index, g_batch)
 
 
@@ -99,6 +119,43 @@ def b_invert_selection(*checkbox_list):
     return new_list
 
 
+def get_next_path(filename):
+    base_dir = os.path.dirname(filename)
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    for i in range(100):
+        new_path = os.path.join(base_dir, f"{base_name}_{str(i).zfill(2)}.wav")
+        if not os.path.exists(new_path) :
+            return new_path
+    return os.path.join(base_dir, f'{str(uuid.uuid4())}.wav')
+
+
+def b_audio_split(audio_breakpoint, *checkbox_list):
+    global g_data_json , g_max_json_index
+    checked_index = []
+    for i, checkbox in enumerate(checkbox_list):
+        if (checkbox == True and g_index+i < len(g_data_json)):
+            checked_index.append(g_index + i)
+    if len(checked_index) == 1 :
+        index = checked_index[0]
+        audio_json = copy.deepcopy(g_data_json[index])
+        path = audio_json[g_json_key_path]
+        data, sample_rate = librosa.load(path, sr=None, mono=True)
+        audio_maxframe = len(data)
+        break_frame = int(audio_breakpoint * sample_rate)
+
+        if (break_frame >= 1 and break_frame < audio_maxframe):
+            audio_first = data[0:break_frame]
+            audio_second = data[break_frame:]
+            nextpath = get_next_path(path)
+            soundfile.write(nextpath, audio_second, sample_rate)
+            soundfile.write(path, audio_first, sample_rate)
+            g_data_json.insert(index + 1, audio_json)
+            g_data_json[index + 1][g_json_key_path] = nextpath
+            b_save_file()
+
+    g_max_json_index = len(g_data_json) - 1
+    return gr.Slider(value=g_index, maximum=g_max_json_index), *b_change_index(g_index, g_batch)
+    
 def b_merge_audio(interval_r, *checkbox_list):
     global g_data_json , g_max_json_index
     checked_index = []
@@ -245,9 +302,13 @@ if __name__ == "__main__":
             
         with gr.Row():
             index_slider = gr.Slider(
-                    minimum=0, maximum=g_max_json_index, value=g_index, step=1, label="Index", scale=4
+                    minimum=0, maximum=g_max_json_index, value=g_index, step=1, label="Index", scale=3
             )
-            btn_save_json = gr.Button("Save json", scale=2)
+            btn_save_json = gr.Button("Save File", visible=False, scale=2)
+            splitpoint_slider = gr.Slider(
+                    minimum=0, maximum=120.0, value=0, step=0.1, label="Audio Split Point(s)", scale=3
+            )
+            btn_audio_split = gr.Button("Split Audio", scale=2)
             btn_invert_selection = gr.Button("Invert Selection", scale=2)
         
         with gr.Row():
@@ -356,6 +417,20 @@ if __name__ == "__main__":
             b_merge_audio,
             inputs=[
                 interval_slider,
+                *g_checkbox_list
+            ],
+            outputs=[
+                index_slider,
+                *g_text_list,
+                *g_audio_list,
+                *g_checkbox_list
+            ]
+        )
+
+        btn_audio_split.click(
+            b_audio_split,
+            inputs=[
+                splitpoint_slider,
                 *g_checkbox_list
             ],
             outputs=[
