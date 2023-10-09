@@ -109,8 +109,8 @@ def b_delete_audio(*checkbox_list):
     if g_index > g_max_json_index:
         g_index = g_max_json_index
         g_index = g_index if g_index >= 0 else 0
-    if change:
-        b_save_file()
+    # if change:
+    #     b_save_file()
     return gr.Slider(value=g_index, maximum=(g_max_json_index if g_max_json_index>=0 else 0)), *b_change_index(g_index, g_batch)
 
 
