@@ -304,12 +304,12 @@ if __name__ == "__main__":
             index_slider = gr.Slider(
                     minimum=0, maximum=g_max_json_index, value=g_index, step=1, label="Index", scale=3
             )
-            btn_save_json = gr.Button("Save File", visible=False, scale=2)
             splitpoint_slider = gr.Slider(
                     minimum=0, maximum=120.0, value=0, step=0.1, label="Audio Split Point(s)", scale=3
             )
-            btn_audio_split = gr.Button("Split Audio", scale=2)
-            btn_invert_selection = gr.Button("Invert Selection", scale=2)
+            btn_audio_split = gr.Button("Split Audio", scale=1)
+            btn_save_json = gr.Button("Save File", visible=True, scale=1)
+            btn_invert_selection = gr.Button("Invert Selection", scale=1)
         
         with gr.Row():
             with gr.Column():
