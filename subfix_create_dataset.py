@@ -28,6 +28,15 @@ def resample_audios(origin_dir, resample_dir, sample_rate):
     print("start resample audios")
     os.makedirs(resample_dir, exist_ok=True)
     dirs = get_sub_dirs(origin_dir)
+
+    try:
+        subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
+        ffmpeg_installed = True
+        print("ffmpeg installed. use ffmpeg.")
+    except Exception as e:
+        ffmpeg_installed = False
+        print("ERROR! ffmpeg is not installed. use librosa.")
+
     for dir in dirs:
         source_dir = os.path.join(origin_dir, dir)
         target_dir = os.path.join(resample_dir, dir)
@@ -39,11 +48,18 @@ def resample_audios(origin_dir, resample_dir, sample_rate):
                 file_path = os.path.join(source_dir, f)
                 target_path = os.path.join(target_dir, f)
                 target_path = os.path.splitext(target_path)[0] + '.wav'
-                process = subprocess.run(["ffmpeg", "-y", "-i", file_path, "-ar", f"{sample_rate}", "-ac", "1", "-v", "quiet", target_path])
-                if process.returncode == 0:
-                    print(f"{index}/{listdir_len} file")
+                if ffmpeg_installed:
+                    process = subprocess.run(["ffmpeg", "-y", "-i", file_path, "-ar", f"{sample_rate}", "-ac", "1", "-v", "quiet", target_path])
                 else:
-                    print(f"\n{file_path} convert fail.")
+                    try:
+                        print(f"{index}/{listdir_len} file")
+                        data, sample_rate = librosa.load(file_path, sr=sample_rate, mono=True)
+                        soundfile.write(target_path, data, sample_rate)
+                    except Exception as e:
+                        print(f"\n{file_path} convert fail.")
+                    finally:
+                        pass
+                    
 
 
 def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipeline):
