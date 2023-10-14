@@ -98,3 +98,8 @@ python subfix_create_dataset.py --source_dir origin --output demo.list
 python subfix_to_json.py --source_file demo.list --target_file demo.json
 python subfix_to_list.py --source_file demo.json --target_file demo.list
 ```
+
+## References
+
+- [anyvoiceai/MassTTS](https://github.com/anyvoiceai/MassTTS)
+- [fishaudio/Bert-VITS2](https://github.com/fishaudio/Bert-VITS2)

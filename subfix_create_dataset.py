@@ -132,12 +132,12 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--source_dir", type=str, default="origin", help="Source directory path")
-    parser.add_argument("--target_dir", type=str, default="dataset", help="Target directory path")
-    parser.add_argument("--resample_dir", type=str, default="origin_resample", help="Resample directory path")
-    parser.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, default is 44100")
-    parser.add_argument("--language", type=str, default="ZH", help="Language, default is ZH")
-    parser.add_argument("--output", type=str, default="demo.list", help="List file, default is demo.list")
+    parser.add_argument("--source_dir", type=str, default="origin", help="Source directory path, Default: origin")
+    parser.add_argument("--target_dir", type=str, default="dataset", help="Target directory path, Default: dataset")
+    parser.add_argument("--resample_dir", type=str, default="origin_resample", help="Resample directory path, Default: origin_resample")
+    parser.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
+    parser.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH")
+    parser.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
 
     args = parser.parse_args()
 
