@@ -282,9 +282,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--load_json', default="None", help='source file, like demo.json')
     parser.add_argument('--load_list', default="None", help='source file, like demo.list')
-    parser.add_argument('--json_key_text', default="text", help='the text key name in json, maybe is text')
-    parser.add_argument('--json_key_path', default="wav_path", help='the path key name in json, maybe is wav_path')
-    parser.add_argument('--g_batch', default=10, help='max number g_batch wav to display')
+    parser.add_argument('--json_key_text', default="text", help='the text key name in json, Default: text')
+    parser.add_argument('--json_key_path', default="wav_path", help='the path key name in json, Default: wav_path')
+    parser.add_argument('--g_batch', default=10, help='max number g_batch wav to display, Default: 10')
 
     args = parser.parse_args()
 
@@ -339,11 +339,13 @@ if __name__ == "__main__":
 
         with gr.Row():
             batchsize_slider = gr.Slider(
-                    minimum=1, maximum=g_batch, value=g_batch, step=1, label="Batch Size", scale=2, interactive=False
+                    minimum=1, maximum=g_batch, value=g_batch, step=1, label="Batch Size", scale=3, interactive=False
             )
             interval_slider = gr.Slider(
-                    minimum=0, maximum=2, value=0, step=0.01, label="Interval", scale=2
-            ) 
+                    minimum=0, maximum=2, value=0, step=0.01, label="Interval", scale=3
+            )
+            btn_theme_dark = gr.Button("明亮模式", link="?__theme=light", scale=1)
+            btn_theme_light = gr.Button("深色模式", link="?__theme=dark", scale=1)
         
         btn_change_index.click(
             b_change_index,
