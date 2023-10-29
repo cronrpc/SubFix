@@ -6,7 +6,6 @@ import subprocess
 import librosa
 import numpy as np
 import soundfile
-from IPython.display import Audio
 
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
