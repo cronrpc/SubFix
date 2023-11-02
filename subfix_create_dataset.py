@@ -47,6 +47,8 @@ def resample_audios(origin_dir, resample_dir, sample_rate):
                 file_path = os.path.join(source_dir, f)
                 target_path = os.path.join(target_dir, f)
                 target_path = os.path.splitext(target_path)[0] + '.wav'
+                if os.path.exists(target_path):
+                    continue
                 if ffmpeg_installed:
                     process = subprocess.run(["ffmpeg", "-y", "-i", file_path, "-ar", f"{sample_rate}", "-ac", "1", "-v", "quiet", target_path])
                 else:
@@ -61,7 +63,7 @@ def resample_audios(origin_dir, resample_dir, sample_rate):
                     
 
 
-def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipeline):
+def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipeline, max_seconds):
     # source_dir, target_dir, sample_rate=44100, language = "ZH", inference_pipeline = None
     
     roles = get_sub_dirs(source_dir)
@@ -81,16 +83,36 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
 
             sentence_list = []
             audio_list = []
+            time_length = 0
             for sentence in rec_result['sentences']:
                 text = sentence['text'].strip()
-                start = int((sentence['start'] / 1000) * sample_rate)
-                end = int((sentence['end'] / 1000) * sample_rate)
-                
                 if (text == ""):
                     continue
-                    
+                start = int((sentence['start'] / 1000) * sample_rate)
+                end = int((sentence['end'] / 1000) * sample_rate)
+
+                if time_length > 0 and time_length + ((sentence['end'] - sentence['start']) / 1000) > max_seconds:
+                    sliced_audio_name = f"{str(count).zfill(6)}"
+                    sliced_audio_path = os.path.join(slice_dir, sliced_audio_name+".wav")
+                    s_sentence = "".join(sentence_list)
+                    if not re.search(r"[。！？]$", s_sentence):
+                        sentence_end = s_sentence[-1]
+                        s_sentence = s_sentence[:-1] + '。' if sentence_end != '。' else s_sentence
+                    audio_concat = np.concatenate(audio_list)
+                    if time_length > max_seconds:
+                        print(f"[too long voice]:{sliced_audio_path}, voice_length:{time_length} seconds")
+                    soundfile.write(sliced_audio_path, audio_concat, sample_rate)
+                    result.append(
+                        f"{sliced_audio_path}|{speaker_name}|{language}|{s_sentence}"
+                    )
+                    sentence_list = []
+                    audio_list = []
+                    time_length = 0
+                    count = count + 1
+
                 sentence_list.append(text)
                 audio_list.append(data[start:end])
+                time_length = time_length + ((sentence['end'] - sentence['start']) / 1000)
                 
                 if ( is_sentence_ending(text) ):
                     sliced_audio_name = f"{str(count).zfill(6)}"
@@ -104,11 +126,13 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
                     )
                     sentence_list = []
                     audio_list = []
+                    time_length = 0
                     count = count + 1
+
     return result
 
 
-def create_list(source_dir, target_dir, resample_dir, sample_rate, language, output_list):
+def create_list(source_dir, target_dir, resample_dir, sample_rate, language, output_list, max_seconds):
 
     resample_audios(source_dir, resample_dir, sample_rate)
     
@@ -117,7 +141,7 @@ def create_list(source_dir, target_dir, resample_dir, sample_rate, language, out
         model='damo/speech_paraformer-large-vad-punc_asr_nat-zh-cn-16k-common-vocab8404-pytorch',
         model_revision="v1.2.4")
 
-    result =  create_dataset(resample_dir, target_dir, sample_rate = sample_rate, language = language, inference_pipeline = inference_pipeline)
+    result =  create_dataset(resample_dir, target_dir, sample_rate = sample_rate, language = language, inference_pipeline = inference_pipeline, max_seconds = max_seconds)
 
     with open(output_list, "w", encoding="utf-8") as file:
         for line in result:
@@ -137,8 +161,9 @@ if __name__ == "__main__":
     parser.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
     parser.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH")
     parser.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
+    parser.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
 
     args = parser.parse_args()
 
-    create_list(args.source_dir, args.target_dir, args.resample_dir, args.sample_rate, args.language, args.output)
+    create_list(args.source_dir, args.target_dir, args.resample_dir, args.sample_rate, args.language, args.output, args.max_seconds)
     
