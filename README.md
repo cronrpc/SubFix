@@ -64,7 +64,7 @@ Select the audio to be deleted and click the `button` to delete. The delete oper
 To execute `subfix_create_dataset.py` for automatic annotation of original audios, execute the following command under `Linux`, and it is best to ensure that the `Python` version is `3.8/3.9`. Here is a way to use `conda` to ensure the `Python` environment is version `3.8`.
 
 ```bash
-conda create -n modelscope python=3.8
+conda create -n modelscope python=3.9
 conda activate modelscope
 ```
 
@@ -74,7 +74,6 @@ Then, install `ffmpeg`, install the `modelscope` module, and upgrade the `protob
 sudo apt install ffmpeg
 
 pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
-pip install --upgrade protobuf
 pip install librosa gradio numpy soundfile
 ```
 

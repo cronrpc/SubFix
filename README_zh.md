@@ -64,7 +64,7 @@ python subfix_webui.py --load_json demo.json
 如果需要执行 `subfix_create_dataset.py` 来进行原始音频的自动标注, 您需要在`Linux`下执行如下命令，并且最好使得`Python`版本是`3.8/3.9`版本。这里提供一个使用`conda`的方式来保证`Python`环境是`3.8`版本。
 
 ```bash
-conda create -n modelscope python=3.8
+conda create -n modelscope python=3.9
 conda activate modelscope
 ```
 
@@ -74,7 +74,6 @@ conda activate modelscope
 sudo apt install ffmpeg
 
 pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
-pip install --upgrade protobuf
 pip install librosa gradio numpy soundfile
 ```
 
