@@ -61,7 +61,7 @@ Select the audio to be deleted and click the `button` to delete. The delete oper
 
 ## Modelscope Installation (Optional)
 
-To execute `subfix_create_dataset.py` for automatic annotation of original audios, execute the following command under `Linux`, and it is best to ensure that the `Python` version is `3.8/3.9`. Here is a way to use `conda` to ensure the `Python` environment is version `3.8`.
+To execute `subfix_create_dataset.py` for automatic annotation of original audios, execute the following command under `Linux`, and it is best to ensure that the `Python` version is `3.8/3.9`. Here is a way to use `conda` to ensure the `Python` environment is version `3.9`.
 
 ```bash
 conda create -n modelscope python=3.9

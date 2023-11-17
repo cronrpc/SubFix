@@ -61,7 +61,7 @@ python subfix_webui.py --load_json demo.json
 
 ## Modelscope 安装 (可选)
 
-如果需要执行 `subfix_create_dataset.py` 来进行原始音频的自动标注, 您需要在`Linux`下执行如下命令，并且最好使得`Python`版本是`3.8/3.9`版本。这里提供一个使用`conda`的方式来保证`Python`环境是`3.8`版本。
+如果需要执行 `subfix_create_dataset.py` 来进行原始音频的自动标注, 您需要在`Linux`下执行如下命令，并且最好使得`Python`版本是`3.8/3.9`版本。这里提供一个使用`conda`的方式来保证`Python`环境是`3.9`版本。
 
 ```bash
 conda create -n modelscope python=3.9
