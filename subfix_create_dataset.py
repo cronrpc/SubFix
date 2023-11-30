@@ -148,7 +148,7 @@ def create_list(source_dir, target_dir, resample_dir, sample_rate, language, out
             try:
                 file.write(line.strip() + '\n')
             except UnicodeEncodeError:
-                print("UnicodeEncodeError: Can't encode to ASCII:", r)
+                print("UnicodeEncodeError: Can't encode to ASCII:", line)
 
 
 if __name__ == "__main__":
