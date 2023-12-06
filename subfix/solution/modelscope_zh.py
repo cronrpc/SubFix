@@ -7,9 +7,6 @@ import librosa
 import numpy as np
 import soundfile
 
-from modelscope.pipelines import pipeline
-from modelscope.utils.constant import Tasks
-
 
 def get_sub_dirs(source_dir):
     sub_dir = [f for f in os.listdir(source_dir) if not f.startswith('.')]
@@ -151,19 +148,8 @@ def create_list(source_dir, target_dir, resample_dir, sample_rate, language, out
                 print("UnicodeEncodeError: Can't encode to ASCII:", line)
 
 
-if __name__ == "__main__":
-    
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--source_dir", type=str, default="origin", help="Source directory path, Default: origin")
-    parser.add_argument("--target_dir", type=str, default="dataset", help="Target directory path, Default: dataset")
-    parser.add_argument("--resample_dir", type=str, default="origin_resample", help="Resample directory path, Default: origin_resample")
-    parser.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
-    parser.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH")
-    parser.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
-    parser.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
-
-    args = parser.parse_args()
-
+def run_task(args):
+    from modelscope.pipelines import pipeline
+    from modelscope.utils.constant import Tasks
     create_list(args.source_dir, args.target_dir, args.resample_dir, args.sample_rate, args.language, args.output, args.max_seconds)
     
