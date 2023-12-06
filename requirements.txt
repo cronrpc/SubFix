@@ -1,0 +1,4 @@
+librosa
+gradio>=3.0.0, <4.0.0
+numpy
+soundfile
