@@ -7,7 +7,7 @@ def handle_webui(args):
 
 def handle_create(args):
     print(f"Checkout command with args: {args}")
-    if args.solution == "modelscope" and args.language == "ZH":
+    if args.solution == "modelscope" and args.language == "ZH" and args.revision == "1.0":
         from .solution.modelscope_zh import run_task
         run_task(args)
 
@@ -44,6 +44,7 @@ def cli():
     modelscope_subparsers.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH")
     modelscope_subparsers.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
     modelscope_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
+    modelscope_subparsers.add_argument("--revision", type=str, default="1.0", help="the modelscope sulotions: 1.0 or 2.0; default: 1.0")
     modelscope_subparsers.set_defaults(func=handle_create)
 
     # create whisper
