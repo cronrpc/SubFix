@@ -92,7 +92,9 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
     return result
 
 
-def create_list(source_dir, target_dir, resample_dir, sample_rate, language, output_list, max_seconds):
+def create_list(source_dir, target_dir, cache_dir, sample_rate, language, output_list, max_seconds):
+
+    resample_dir = os.path.join(cache_dir,"subfix",f"{sample_rate}")
 
     convert_files(source_dir, resample_dir, sample_rate)
     
@@ -112,5 +114,5 @@ def create_list(source_dir, target_dir, resample_dir, sample_rate, language, out
 
 
 def run_task(args):
-    create_list(args.source_dir, args.target_dir, args.resample_dir, args.sample_rate, args.language, args.output, args.max_seconds)
+    create_list(args.source_dir, args.target_dir, args.cache_dir, args.sample_rate, args.language, args.output, args.max_seconds)
     
