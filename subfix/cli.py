@@ -16,7 +16,7 @@ def cli():
     parser = argparse.ArgumentParser(description="a tool to check or create TTS dataset")
     subparsers = parser.add_subparsers(dest='command')
     
-
+    # webui
     parser_webui = subparsers.add_parser('webui', 
                                           help='webui to modify audios')
     parser_webui.add_argument('--load_json', default="None", help='source file, like demo.json')
@@ -28,11 +28,13 @@ def cli():
     parser_webui.set_defaults(func=handle_webui)
     
 
+    # create
     parser_create = subparsers.add_parser('create', 
                                           help='create dataset by origin audio dirctory')
     create_subparsers = parser_create.add_subparsers(dest='solution', 
                                                      help='auto asr solution, modelscope or whisper')
 
+    # create modelscope
     modelscope_subparsers = create_subparsers.add_parser('modelscope', 
                                                          help='modelscope models')
     modelscope_subparsers.add_argument("--source_dir", type=str, default="origin", help="Source directory path, Default: origin")
@@ -44,6 +46,7 @@ def cli():
     modelscope_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
     modelscope_subparsers.set_defaults(func=handle_create)
 
+    # create whisper
     whisper_subparsers = create_subparsers.add_parser('whisper', 
                                                       help='whisper models')
     whisper_subparsers.add_argument("--source_dir", type=str, default="origin", help="Source directory path, Default: origin")
@@ -55,7 +58,7 @@ def cli():
     whisper_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
     whisper_subparsers.set_defaults(func=handle_create)
 
-
+    # run
     args = parser.parse_args()
 
     if hasattr(args, 'func'):
