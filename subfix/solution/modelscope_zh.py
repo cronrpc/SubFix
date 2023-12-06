@@ -6,7 +6,8 @@ import subprocess
 import librosa
 import numpy as np
 import soundfile
-
+from modelscope.pipelines import pipeline
+from modelscope.utils.constant import Tasks
 
 def get_sub_dirs(source_dir):
     sub_dir = [f for f in os.listdir(source_dir) if not f.startswith('.')]
@@ -149,7 +150,5 @@ def create_list(source_dir, target_dir, resample_dir, sample_rate, language, out
 
 
 def run_task(args):
-    from modelscope.pipelines import pipeline
-    from modelscope.utils.constant import Tasks
     create_list(args.source_dir, args.target_dir, args.resample_dir, args.sample_rate, args.language, args.output, args.max_seconds)
     
