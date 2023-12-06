@@ -37,7 +37,7 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
         slice_dir = os.path.join(target_dir, speaker_name)
         os.makedirs(slice_dir, exist_ok=True)
 
-        for audio_path in source_audios:
+        for audio_path in sorted(source_audios):
             rec_result = inference_pipeline(audio_in=audio_path) # dict_keys(['text', 'text_postprocessed', 'time_stamp', 'sentences'])
             data, sample_rate = librosa.load(audio_path, sr=sample_rate, mono=True)
 
@@ -48,7 +48,7 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
                 text = sentence['text'].strip()
                 if (text == ""):
                     continue
-                start = int((sentence['start'] / 1000) * sample_rate)
+                start = int((sentence['ts_list'][0][0] / 1000) * sample_rate)
                 end = int((sentence['end'] / 1000) * sample_rate)
 
                 if time_length > 0 and time_length + ((sentence['end'] - sentence['start']) / 1000) > max_seconds:
