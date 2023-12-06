@@ -94,7 +94,7 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
 
 def create_list(source_dir, target_dir, cache_dir, sample_rate, language, output_list, max_seconds):
 
-    resample_dir = os.path.join(cache_dir,"subfix",f"{sample_rate}")
+    resample_dir = os.path.join(cache_dir,"subfix","origin",f"{sample_rate}")
 
     convert_files(source_dir, resample_dir, sample_rate)
     
