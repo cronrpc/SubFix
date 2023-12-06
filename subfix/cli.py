@@ -8,7 +8,7 @@ def handle_webui(args):
 def handle_create(args):
     print(f"Checkout command with args: {args}")
     if args.solution == "modelscope" and args.language == "ZH" and args.revision == "1.0":
-        from .solution.modelscope_zh import run_task
+        from .solution.modelscope_zh_v1 import run_task
         run_task(args)
 
 
