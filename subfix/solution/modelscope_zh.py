@@ -9,6 +9,8 @@ import soundfile
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
 
+from subfix.utils import convert_files
+
 def get_sub_dirs(source_dir):
     sub_dir = [f for f in os.listdir(source_dir) if not f.startswith('.')]
     sub_dir = [f for f in sub_dir if os.path.isdir(os.path.join(source_dir, f))]
@@ -19,46 +21,6 @@ def is_sentence_ending(sentence):
     if re.search(r'[。？！……]$', sentence):
         return True
     return False
-
-
-def resample_audios(origin_dir, resample_dir, sample_rate):
-    print("start resample audios")
-    os.makedirs(resample_dir, exist_ok=True)
-    dirs = get_sub_dirs(origin_dir)
-
-    try:
-        subprocess.run(["ffmpeg", "-version"], capture_output=True, check=True)
-        ffmpeg_installed = True
-        print("ffmpeg installed. use ffmpeg.")
-    except Exception as e:
-        ffmpeg_installed = False
-        print("ERROR! ffmpeg is not installed. use librosa.")
-
-    for dir in dirs:
-        source_dir = os.path.join(origin_dir, dir)
-        target_dir = os.path.join(resample_dir, dir)
-        os.makedirs(target_dir, exist_ok=True)
-        listdir = list(os.listdir(source_dir))
-        listdir_len = len(listdir)
-        for index, f in enumerate(listdir, start=1):
-            if f.endswith(".wav") or f.endswith(".mp3"):
-                file_path = os.path.join(source_dir, f)
-                target_path = os.path.join(target_dir, f)
-                target_path = os.path.splitext(target_path)[0] + '.wav'
-                if os.path.exists(target_path):
-                    continue
-                if ffmpeg_installed:
-                    process = subprocess.run(["ffmpeg", "-y", "-i", file_path, "-ar", f"{sample_rate}", "-ac", "1", "-v", "quiet", target_path])
-                else:
-                    try:
-                        print(f"{index}/{listdir_len} file")
-                        data, sample_rate = librosa.load(file_path, sr=sample_rate, mono=True)
-                        soundfile.write(target_path, data, sample_rate)
-                    except Exception as e:
-                        print(f"\n{file_path} convert fail.")
-                    finally:
-                        pass
-                    
 
 
 def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipeline, max_seconds):
@@ -132,7 +94,7 @@ def create_dataset(source_dir, target_dir, sample_rate, language, inference_pipe
 
 def create_list(source_dir, target_dir, resample_dir, sample_rate, language, output_list, max_seconds):
 
-    resample_audios(source_dir, resample_dir, sample_rate)
+    convert_files(source_dir, resample_dir, sample_rate)
     
     inference_pipeline = pipeline(
         task=Tasks.auto_speech_recognition,

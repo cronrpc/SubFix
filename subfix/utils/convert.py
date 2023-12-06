@@ -13,27 +13,35 @@ def ffmpeg_installed():
         subprocess.run(["ffmpeg", "-version"], 
                        capture_output=True, 
                        check=True)
+        print("find ffmpeg installed, use ffmpeg")
         return True
     except Exception as e:
+        print("ffmpeg not found, use librosa")
         return False
 
 
 def convert_wav_ffmpeg(source_file : str, 
                        target_file : str, 
-                       sample_rate : int):
+                       sample_rate : int,
+                       number      : int):
     
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
 
+    print(f"file {number} start convert")
+
     cmd = ["ffmpeg", "-y", "-i", source_file, "-ar", f"{sample_rate}", "-ac", "1", "-v", "quiet", target_file]
 
-    subprocess.run(cmd, shell=True)
+    subprocess.run(cmd)
 
 
 def convert_wav_librosa(source_file : str, 
                         target_file : str, 
-                        sample_rate : int):
+                        sample_rate : int,
+                        number      : int):
     
     os.makedirs(os.path.dirname(target_file), exist_ok=True)
+
+    print(f"file {number} start convert")
 
     data, sample_rate = librosa.load(source_file, 
                                      sr=sample_rate, 
@@ -57,7 +65,9 @@ def convert_files(source_dir : str,
     os.makedirs(target_dir, exist_ok=True)
 
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
-        for file in ext_files:
+        print(f"files count: {len(ext_files)}")
+        print(f"max_threads = {max_threads}")
+        for number, file in enumerate(ext_files, start=1):
             source_path = os.path.join(source_dir, file)
             target_path = os.path.join(target_dir, os.path.splitext(file)[0] + '.wav')
             os.makedirs(os.path.dirname(target_path), exist_ok=True)
@@ -67,9 +77,11 @@ def convert_files(source_dir : str,
                     executor.submit(convert_wav_ffmpeg, 
                                     source_path, 
                                     target_path, 
-                                    sample_rate)
+                                    sample_rate,
+                                    number)
                 else:
                     executor.submit(convert_wav_librosa, 
                                     source_path, 
                                     target_path, 
-                                    sample_rate)
+                                    sample_rate,
+                                    number)
