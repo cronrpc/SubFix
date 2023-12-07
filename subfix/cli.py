@@ -1,4 +1,24 @@
 import argparse
+import os
+
+
+def handle_format_convert(args):
+    from .format import FormatBertvits2, FormatJson
+    print(os.path.splitext(args.source)[1])
+    if os.path.splitext(args.source)[1] == '.list':
+        souce_format = FormatBertvits2()
+    else:
+        souce_format = FormatJson()
+
+    if os.path.splitext(args.target)[1] == '.list':
+        target_format = FormatBertvits2()
+    else:
+        target_format = FormatJson()
+
+    data = souce_format.load(args.source)
+    target_format.save(args.target, data)
+        
+
 
 def handle_webui(args):
     from .webui import startwebui
@@ -58,6 +78,13 @@ def cli():
     whisper_subparsers.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
     whisper_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
     whisper_subparsers.set_defaults(func=handle_create)
+
+    # format_convert
+    parser_format_convert = subparsers.add_parser('format_convert', 
+                                          help='format_convert: format_convert --source demo.json --target demo.list')
+    parser_format_convert.add_argument('--source', default="demo.list", help='source file, like demo.json/list')
+    parser_format_convert.add_argument('--target', default="demo.json", help='target file, like demo.list/json')
+    parser_format_convert.set_defaults(func=handle_format_convert)
 
     # run
     args = parser.parse_args()
