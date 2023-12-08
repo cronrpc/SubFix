@@ -2,6 +2,14 @@ import argparse
 import os
 
 
+def handle_diarization(args):
+    print(f"handle_diarization from {args.source_dir} to {args.target_dir}")
+    assert(os.path.exists(args.source_dir))
+    from subfix.solution.diarization import diarization_dir
+    diarization_dir(args)
+    pass
+
+
 def handle_format_convert(args):
     from .format import FormatBertvits2, FormatJson
     print(os.path.splitext(args.source)[1])
@@ -86,6 +94,18 @@ def cli():
     parser_format_convert.add_argument('--source', default="demo.list", help='source file, like demo.json/list')
     parser_format_convert.add_argument('--target', default="demo.json", help='target file, like demo.list/json')
     parser_format_convert.set_defaults(func=handle_format_convert)
+
+    # diarization
+    parser_diarization = subparsers.add_parser('diarization', 
+                                          help='diarization: diarization -h')
+    parser_diarization.add_argument('--source_dir', default="origin", help='source dir, Default: origin')
+    parser_diarization.add_argument('--target_dir', default="diarization", help='target dir, Default: diarization')
+    parser_diarization.add_argument('--cache_dir', default="cache", help='cache dir, Default: cache')
+    parser_diarization.add_argument('--min_seconds', default=3.0, help='slice must bigger than min_seconds, Default: 3.0')
+    parser_diarization.add_argument('--top_of_number', default=1, type=int, help='The n items with the highest frequency of occurrence. Default: 1')
+    parser_diarization.add_argument('--interval', default=1.0, type=float, help='The interval between two slice audio. Default: 1.0')
+    parser_diarization.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
+    parser_diarization.set_defaults(func=handle_diarization)
 
     # run
     args = parser.parse_args()

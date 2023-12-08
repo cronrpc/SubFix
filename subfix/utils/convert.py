@@ -53,14 +53,15 @@ def convert_wav_librosa(source_file : str,
 def convert_files(source_dir : str, 
                   target_dir : str, 
                   sample_rate : int, 
-                  max_threads = None):
+                  max_threads = None,
+                  force_librosa = False):
 
     if max_threads == None:
         max_threads = os.cpu_count()
 
     ext_files = get_files_by_ext(source_dir, [".mp3","acc","wav"])
 
-    ffmpeg_installed_flag = ffmpeg_installed()
+    ffmpeg_installed_flag = (not force_librosa) and ffmpeg_installed()
 
     os.makedirs(target_dir, exist_ok=True)
 
