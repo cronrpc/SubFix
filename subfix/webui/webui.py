@@ -105,6 +105,9 @@ def b_delete_audio(*checkbox_list):
     for i, checkbox in reversed(list(enumerate(checkbox_list))):
         if g_index + i < len(g_data_json):
             if (checkbox == True):
+                if g_force_delete:
+                    print("remove",g_data_json[g_index + i][g_json_key_path])
+                    os.remove(g_data_json[g_index + i][g_json_key_path])
                 g_data_json.pop(g_index + i)
                 change = True
     
@@ -112,8 +115,8 @@ def b_delete_audio(*checkbox_list):
     if g_index > g_max_json_index:
         g_index = g_max_json_index
         g_index = g_index if g_index >= 0 else 0
-    # if change:
-    #     b_save_file()
+    if g_force_delete and change:
+        b_save_file()
     return gr.Slider(value=g_index, maximum=(g_max_json_index if g_max_json_index>=0 else 0)), *b_change_index(g_index, g_batch)
 
 
@@ -164,6 +167,7 @@ def b_merge_audio(interval_r, *checkbox_list):
     checked_index = []
     audios_path = []
     audios_text = []
+    delete_files = []
     for i, checkbox in enumerate(checkbox_list):
         if (checkbox == True and g_index+i < len(g_data_json)):
             checked_index.append(g_index + i)
@@ -173,6 +177,7 @@ def b_merge_audio(interval_r, *checkbox_list):
             audios_path.append(g_data_json[i][g_json_key_path])
             audios_text.append(g_data_json[i][g_json_key_text])
         for i in reversed(checked_index[1:]):
+            delete_files.append(g_data_json[i][g_json_key_path])
             g_data_json.pop(i)
 
         base_index = checked_index[0]
@@ -191,6 +196,9 @@ def b_merge_audio(interval_r, *checkbox_list):
             audio_list.append(data)
 
         audio_concat = np.concatenate(audio_list)
+
+        for item_file in delete_files:
+            os.remove(item_file)
 
         soundfile.write(base_path, audio_concat, l_sample_rate)
 
@@ -260,8 +268,8 @@ def b_load_file():
         b_load_list()
 
 
-def set_global(load_json, load_list, json_key_text, json_key_path, batch, webui_language):
-    global g_json_key_text, g_json_key_path, g_load_file, g_load_format, g_batch, g_language
+def set_global(load_json, load_list, json_key_text, json_key_path, batch, webui_language, force_delete):
+    global g_json_key_text, g_json_key_path, g_load_file, g_load_format, g_batch, g_language, g_force_delete
 
     g_batch = int(batch)
     
@@ -278,13 +286,14 @@ def set_global(load_json, load_list, json_key_text, json_key_path, batch, webui_
     g_json_key_text = json_key_text
     g_json_key_path = json_key_path
     g_language = TextLanguage(webui_language)
+    g_force_delete = force_delete
 
     b_load_file()
 
 
 def startwebui(args):
 
-    set_global(args.load_json, args.load_list, args.json_key_text, args.json_key_path, args.g_batch, args.webui_language)
+    set_global(args.load_json, args.load_list, args.json_key_text, args.json_key_path, args.g_batch, args.webui_language, args.force_delete)
     
     with gr.Blocks() as demo:
 
