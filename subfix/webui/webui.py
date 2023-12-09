@@ -9,6 +9,8 @@ import gradio as gr
 import numpy as np
 import soundfile
 
+from .language import TextLanguage
+
 g_json_key_text = ""
 g_json_key_path = ""
 g_load_file = ""
@@ -21,6 +23,7 @@ g_text_list = []
 g_audio_list = []
 g_checkbox_list = []
 g_data_json = []
+g_language = None
 
 
 def reload_data(index, batch):
@@ -102,6 +105,9 @@ def b_delete_audio(*checkbox_list):
     for i, checkbox in reversed(list(enumerate(checkbox_list))):
         if g_index + i < len(g_data_json):
             if (checkbox == True):
+                if g_force_delete:
+                    print("remove",g_data_json[g_index + i][g_json_key_path])
+                    os.remove(g_data_json[g_index + i][g_json_key_path])
                 g_data_json.pop(g_index + i)
                 change = True
     
@@ -109,8 +115,8 @@ def b_delete_audio(*checkbox_list):
     if g_index > g_max_json_index:
         g_index = g_max_json_index
         g_index = g_index if g_index >= 0 else 0
-    # if change:
-    #     b_save_file()
+    if g_force_delete and change:
+        b_save_file()
     return gr.Slider(value=g_index, maximum=(g_max_json_index if g_max_json_index>=0 else 0)), *b_change_index(g_index, g_batch)
 
 
@@ -161,6 +167,7 @@ def b_merge_audio(interval_r, *checkbox_list):
     checked_index = []
     audios_path = []
     audios_text = []
+    delete_files = []
     for i, checkbox in enumerate(checkbox_list):
         if (checkbox == True and g_index+i < len(g_data_json)):
             checked_index.append(g_index + i)
@@ -170,6 +177,7 @@ def b_merge_audio(interval_r, *checkbox_list):
             audios_path.append(g_data_json[i][g_json_key_path])
             audios_text.append(g_data_json[i][g_json_key_text])
         for i in reversed(checked_index[1:]):
+            delete_files.append(g_data_json[i][g_json_key_path])
             g_data_json.pop(i)
 
         base_index = checked_index[0]
@@ -188,6 +196,9 @@ def b_merge_audio(interval_r, *checkbox_list):
             audio_list.append(data)
 
         audio_concat = np.concatenate(audio_list)
+
+        for item_file in delete_files:
+            os.remove(item_file)
 
         soundfile.write(base_path, audio_concat, l_sample_rate)
 
@@ -257,8 +268,8 @@ def b_load_file():
         b_load_list()
 
 
-def set_global(load_json, load_list, json_key_text, json_key_path, batch):
-    global g_json_key_text, g_json_key_path, g_load_file, g_load_format, g_batch
+def set_global(load_json, load_list, json_key_text, json_key_path, batch, webui_language, force_delete):
+    global g_json_key_text, g_json_key_path, g_load_file, g_load_format, g_batch, g_language, g_force_delete
 
     g_batch = int(batch)
     
@@ -274,42 +285,36 @@ def set_global(load_json, load_list, json_key_text, json_key_path, batch):
         
     g_json_key_text = json_key_text
     g_json_key_path = json_key_path
+    g_language = TextLanguage(webui_language)
+    g_force_delete = force_delete
 
     b_load_file()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--load_json', default="None", help='source file, like demo.json')
-    parser.add_argument('--load_list', default="None", help='source file, like demo.list')
-    parser.add_argument('--json_key_text', default="text", help='the text key name in json, Default: text')
-    parser.add_argument('--json_key_path', default="wav_path", help='the path key name in json, Default: wav_path')
-    parser.add_argument('--g_batch', default=10, help='max number g_batch wav to display, Default: 10')
+def startwebui(args):
 
-    args = parser.parse_args()
-
-    set_global(args.load_json, args.load_list, args.json_key_text, args.json_key_path, args.g_batch)
+    set_global(args.load_json, args.load_list, args.json_key_text, args.json_key_path, args.g_batch, args.webui_language, args.force_delete)
     
     with gr.Blocks() as demo:
 
         with gr.Row():
-            btn_change_index = gr.Button("跳转")
-            btn_submit_change = gr.Button("保存文本")
-            btn_merge_audio = gr.Button("合并")
-            btn_delete_audio = gr.Button("删除")
-            btn_previous_index = gr.Button("上一页")
-            btn_next_index = gr.Button("下一页")
+            btn_change_index = gr.Button(g_language("Change Index"))
+            btn_submit_change = gr.Button(g_language("Submit Text"))
+            btn_merge_audio = gr.Button(g_language("Merge Audio"))
+            btn_delete_audio = gr.Button(g_language("Delete Audio"))
+            btn_previous_index = gr.Button(g_language("Previous Index"))
+            btn_next_index = gr.Button(g_language("Next Index"))
             
         with gr.Row():
             index_slider = gr.Slider(
-                    minimum=0, maximum=g_max_json_index, value=g_index, step=1, label="Index", scale=3
+                    minimum=0, maximum=g_max_json_index, value=g_index, step=1, label=g_language("Index"), scale=3
             )
             splitpoint_slider = gr.Slider(
-                    minimum=0, maximum=120.0, value=0, step=0.1, label="音频分割点(秒)", scale=3
+                    minimum=0, maximum=120.0, value=0, step=0.1, label=g_language("Audio Split Point(s)"), scale=3
             )
-            btn_audio_split = gr.Button("分割音频", scale=1)
-            btn_save_json = gr.Button("保存修改", visible=True, scale=1)
-            btn_invert_selection = gr.Button("反选", scale=1)
+            btn_audio_split = gr.Button(g_language("Split Audio"), scale=1)
+            btn_save_json = gr.Button(g_language("Save File"), visible=True, scale=1)
+            btn_invert_selection = gr.Button(g_language("Invert Selection"), scale=1)
         
         with gr.Row():
             with gr.Column():
@@ -321,14 +326,14 @@ if __name__ == "__main__":
                             scale=5
                         )
                         audio_output = gr.Audio(
-                            label="Output Audio",
+                            label= g_language("Output Audio"),
                             visible = True,
                             scale=5
                         )
                         audio_check = gr.Checkbox(
                             label="Yes",
                             show_label = True,
-                            info = "Choose Audio",
+                            info = g_language("Choose Audio"),
                             scale=1
                         )
                         g_text_list.append(text)
@@ -339,13 +344,13 @@ if __name__ == "__main__":
 
         with gr.Row():
             batchsize_slider = gr.Slider(
-                    minimum=1, maximum=g_batch, value=g_batch, step=1, label="Batch Size", scale=3, interactive=False
+                    minimum=1, maximum=g_batch, value=g_batch, step=1, label=g_language("Batch Size"), scale=3, interactive=False
             )
             interval_slider = gr.Slider(
-                    minimum=0, maximum=2, value=0, step=0.01, label="Interval", scale=3
+                    minimum=0, maximum=2, value=0, step=0.01, label=g_language("Interval"), scale=3
             )
-            btn_theme_dark = gr.Button("明亮模式", link="?__theme=light", scale=1)
-            btn_theme_light = gr.Button("深色模式", link="?__theme=dark", scale=1)
+            btn_theme_dark = gr.Button(g_language("Light Theme"), link="?__theme=light", scale=1)
+            btn_theme_light = gr.Button(g_language("Dark Theme"), link="?__theme=dark", scale=1)
         
         btn_change_index.click(
             b_change_index,
