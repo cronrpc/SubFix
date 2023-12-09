@@ -51,7 +51,7 @@ def create_list(source_dir, target_dir, cache_dir, sample_rate, language, output
     if language == "ZH":
         asr_model = Speech_Paraformer_Large_Vad_Punc_Asr_zh()
     else:
-        asr_model = Speech_UniASR_Asr_MultiLang(language=language)
+        asr_model = Speech_UniASR_Asr_MultiLang(language=language, max_seconds=max_seconds)
 
     result =  create_dataset(resample_dir, target_dir, sample_rate = sample_rate, language = language, infer_model = asr_model, max_seconds = max_seconds)
 

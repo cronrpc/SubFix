@@ -43,7 +43,11 @@ subfix webui -h
 subfix webui --load_list demo.list --webui_language zh --force_delete True
 # create dataset
 subfix create modelscope -h
+# English
+subfix create modelscope --source_dir origin --language EN
+# Chinese
 subfix create modelscope --source_dir origin --language ZH
+# Japanese
 subfix create modelscope --source_dir origin --language JA
 # diarization (speaker segmentation)
 subfix diarization -h
@@ -140,3 +144,4 @@ subfix format_convert --source demo.json --target demo.list
 
 - [anyvoiceai/MassTTS](https://github.com/anyvoiceai/MassTTS)
 - [fishaudio/Bert-VITS2](https://github.com/fishaudio/Bert-VITS2)
+- [openai/whisper](https://github.com/openai/whisper)

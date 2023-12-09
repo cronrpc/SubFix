@@ -2,9 +2,9 @@ from typing import Any
 import librosa
 
 class Speech_UniASR_Asr_MultiLang():
-    def __init__(self, language : str) -> None:
+    def __init__(self, language : str, max_seconds : float) -> None:
         self.set_asr_model_by_language(language)
-        self.set_vad_model_by_language(language)
+        self.set_vad_model_by_language(language, max_seconds)
     
     def set_asr_model_by_language(self, language):
 
@@ -31,9 +31,9 @@ class Speech_UniASR_Asr_MultiLang():
                                     model = model_config[language],
                                     model_revision = revision )
 
-    def set_vad_model_by_language(self, language):
+    def set_vad_model_by_language(self, language, max_seconds = 60.0):
         from subfix.models.audio.vad.speech_fsmn_vad_zh import Speech_Fsmn_Vad_Zh_16k_Common
-        self._vad_model = Speech_Fsmn_Vad_Zh_16k_Common()
+        self._vad_model = Speech_Fsmn_Vad_Zh_16k_Common(max_seconds=max_seconds)
 
     def infer(self, audio_in) -> None:
         print("start asr:", audio_in)
