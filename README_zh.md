@@ -5,7 +5,7 @@
 
 [English Version](README.md)
 
-旧版独立文件可以访问[Release V1.2](https://github.com/cronrpc/SubFix/tree/v1.2)获取。
+旧版独立文件可以访问[Release V1.2](https://github.com/cronrpc/SubFix/releases/tag/v1.2)获取。
 
 ## 安装
 
