@@ -1,7 +1,7 @@
 # SubFix
 `SubFix` is a web tool designed for easily editing and modifying audio subtitles. Users can see changes in real-time and conveniently **merge, split, delete, and edit subtitles** of audios.
 
-`SubFix` also supports automated voice annotation, utilizing `modelscope` and `whisper` for multilingual text annotation. Currently, `modelscope` provides automated annotations in languages including Chinese, English, Japanese, German, and Russian.
+`SubFix` also supports automated voice annotation, utilizing `modelscope` and `whisper` for multilingual text annotation. Currently, `modelscope` provides automated annotations in languages including Chinese, English, Japanese, German, and Russian. `whisper` supports almost all languages."
 
 [中文版本](README_zh.md)
 
@@ -49,6 +49,9 @@ subfix create modelscope --source_dir origin --language EN
 subfix create modelscope --source_dir origin --language ZH
 # Japanese
 subfix create modelscope --source_dir origin --language JA
+# OpenAI Whisper Annotation (Supports Almost All Languages)
+subfix create whisper --source_dir origin --language ZH
+subfix create whisper --source_dir origin --language JA
 # diarization (speaker segmentation)
 subfix diarization -h
 subfix diarization --source_dir origin --target_dir diarization --min_seconds 3.0

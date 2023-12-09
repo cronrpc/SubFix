@@ -38,6 +38,9 @@ def handle_create(args):
     if args.solution == "modelscope":
         from .solution.modelscope_multi_lang import run_task
         run_task(args)
+    elif args.solution == "whisper":
+        from .solution.whisper_multi_lang import run_whisper_task
+        run_whisper_task(args)
 
 
 def cli():
@@ -73,7 +76,6 @@ def cli():
     modelscope_subparsers.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH|JA|KO|EN|DE|RU")
     modelscope_subparsers.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
     modelscope_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
-    modelscope_subparsers.add_argument("--revision", type=str, default="1.0", help="the modelscope sulotions: 1.0; default: 1.0")
     modelscope_subparsers.set_defaults(func=handle_create)
 
     # create whisper
@@ -82,8 +84,9 @@ def cli():
     whisper_subparsers.add_argument("--source_dir", type=str, default="origin", help="Source directory path, Default: origin")
     whisper_subparsers.add_argument("--target_dir", type=str, default="dataset", help="Target directory path, Default: dataset")
     whisper_subparsers.add_argument("--cache_dir", type=str, default="cache", help="cache directory path, Default: cache")
+    whisper_subparsers.add_argument("--model", type=str, default="large-v3", help="whisper model small/medium/large-v3, Default: small")
     whisper_subparsers.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
-    whisper_subparsers.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH")
+    whisper_subparsers.add_argument("--language", type=str, default="ZH", help="Any Language whisper support, Default: ZH")
     whisper_subparsers.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
     whisper_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
     whisper_subparsers.set_defaults(func=handle_create)

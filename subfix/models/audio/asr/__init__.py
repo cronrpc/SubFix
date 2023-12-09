@@ -1,2 +1,3 @@
 from .speech_paraformer_large_vad_punc_asr_zh import Speech_Paraformer_Large_Vad_Punc_Asr_zh
 from .speech_uniasr_asr_multilang import Speech_UniASR_Asr_MultiLang
+from .openai_whisper import Openai_Whisper

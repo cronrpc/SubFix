@@ -1,7 +1,7 @@
 # SubFix
 `SubFix`是一个用于轻松地编辑修改音频字幕的网页工具。能够实时地看到改动，方便地对音频进行**合并、分割、删除、编辑字幕**。
 
-`SubFix`同时也支持自动化语音标注，使用`modelscope`和`whisper`对文本进行多语言标注。目前`modelscope`支持中文、英语、日语、德语、德语、俄语的自动化标注。
+`SubFix`同时也支持自动化语音标注，使用`modelscope`和`whisper`对文本进行多语言标注。目前`modelscope`支持中文、英语、日语、德语、德语、俄语的自动化标注。`whisper`支持几乎所有语言。
 
 [English Version](README.md)
 
@@ -50,6 +50,9 @@ subfix create modelscope --source_dir origin --language EN
 subfix create modelscope --source_dir origin --language ZH
 # 日语
 subfix create modelscope --source_dir origin --language JA
+# Openai-Whisper标注 (几乎支持所有语言)
+subfix create whisper --source_dir origin --language ZH
+subfix create whisper --source_dir origin --language JA
 # 说话人确认 （分离不同说话人）
 subfix diarization -h
 subfix diarization --source_dir origin --target_dir diarization --min_seconds 3.0
