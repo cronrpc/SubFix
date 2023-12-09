@@ -2,3 +2,4 @@ librosa
 gradio
 numpy
 soundfile
+torchaudio

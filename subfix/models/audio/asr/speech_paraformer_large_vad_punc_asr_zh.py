@@ -2,7 +2,7 @@ from typing import Any
 
 
 class Speech_Paraformer_Large_Vad_Punc_Asr_zh():
-    def __init__(self) -> None:
+    def __init__(self, language : str = "ZH") -> None:
         from modelscope.pipelines import pipeline
         from modelscope.utils.constant import Tasks
 
