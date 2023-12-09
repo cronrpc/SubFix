@@ -59,7 +59,7 @@ def cli():
 
     # create
     parser_create = subparsers.add_parser('create', 
-                                          help='create dataset by origin audio dirctory')
+                                          help='create dataset by origin audio dirctory: subfix create [modelscope|whisper]')
     create_subparsers = parser_create.add_subparsers(dest='solution', 
                                                      help='auto asr solution, modelscope or whisper')
 

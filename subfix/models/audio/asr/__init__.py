@@ -1,0 +1,1 @@
+from .speech_paraformer_large_vad_punc_asr_zh import Speech_Paraformer_Large_Vad_Punc_Asr_zh
