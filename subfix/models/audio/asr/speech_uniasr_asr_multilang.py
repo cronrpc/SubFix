@@ -9,15 +9,15 @@ class Speech_UniASR_Asr_MultiLang():
     def set_asr_model_by_language(self, language):
 
         model_config = {
-            "ko" : 'damo/speech_UniASR_asr_2pass-ko-16k-common-vocab6400-tensorflow1-offline',
-            "ja" : 'damo/speech_UniASR_asr_2pass-ja-16k-common-vocab93-tensorflow1-offline',
-            "en" : 'damo/speech_UniASR_asr_2pass-en-16k-common-vocab1080-tensorflow1-offline',
-            "de" : 'damo/speech_UniASR_asr_2pass-de-16k-common-vocab3690-tensorflow1-online',
-            "ru" : 'damo/speech_UniASR_asr_2pass-ru-16k-common-vocab1664-tensorflow1-offline',
+            "KO" : 'damo/speech_UniASR_asr_2pass-ko-16k-common-vocab6400-tensorflow1-offline',
+            "JA" : 'damo/speech_UniASR_asr_2pass-ja-16k-common-vocab93-tensorflow1-offline',
+            "EN" : 'damo/speech_UniASR_asr_2pass-en-16k-common-vocab1080-tensorflow1-offline',
+            "DE" : 'damo/speech_UniASR_asr_2pass-de-16k-common-vocab3690-tensorflow1-online',
+            "RU" : 'damo/speech_UniASR_asr_2pass-ru-16k-common-vocab1664-tensorflow1-offline',
         }
 
         model_config_revision = {
-            "de" : 'v1.0.1'
+            "DE" : 'v1.0.1'
         }
 
         assert( language in model_config.keys() )
