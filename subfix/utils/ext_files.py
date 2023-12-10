@@ -16,5 +16,5 @@ def get_files_by_ext(directory: str,
                 relative_path = os.path.relpath(os.path.join(root, file), 
                                                 directory)
                 relative_paths.append(relative_path)
-
+    relative_paths = sorted(relative_paths)
     return relative_paths
