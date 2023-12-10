@@ -25,6 +25,7 @@ Installing Dependencies:
 ```bash
 sudo apt install build-essential
 sudo apt install ffmpeg
+sudo apt install libsox-dev
 
 git clone https://github.com/cronrpc/SubFix.git
 cd SubFix
