@@ -108,6 +108,7 @@ def cli():
     parser_diarization.add_argument('--top_of_number', default=1, type=int, help='The n items with the highest frequency of occurrence. Default: 1')
     parser_diarization.add_argument('--interval', default=1.0, type=float, help='The interval between two slice audio. Default: 1.0')
     parser_diarization.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
+    parser_diarization.add_argument("--oracle_num", type=int, default=0, help="oracle number, the person number you think maybe in audio, Default: 0")
     parser_diarization.set_defaults(func=handle_diarization)
 
     # run

@@ -14,7 +14,7 @@ def diarization_dir(args):
     min_seconds = args.min_seconds
     top_of_number = args.top_of_number
     interval = args.interval
-
+    oracle_num = None if int(args.oracle_num) == 0 else int(args.oracle_num)
     
     dir_16000 = os.path.join(cache_dir,'subfix','origin','16000')
     dir_sample_rate = os.path.join(cache_dir,'subfix','origin',str(sample_rate))
@@ -37,7 +37,7 @@ def diarization_dir(args):
         f_16000 = os.path.join(dir_16000, file_path)
         f_samplerate = os.path.join(dir_sample_rate, file_path)
         
-        result, topn, topn_number = SCSD.infer(f_16000, min_seconds = min_seconds)
+        result, topn, topn_number = SCSD.infer(f_16000, min_seconds = min_seconds , oracle_num = oracle_num)
         topn = topn[:top_of_number]
         for person in topn:
             vad_list = []
@@ -46,7 +46,8 @@ def diarization_dir(args):
             for item in result:
                 if item[2] == person:
                     vad_list.append(item[:2])
-            merge_audio_vads(f_samplerate, save_path, vad_list, interval=interval)
+            if len(vad_list) > 0:
+                merge_audio_vads(f_samplerate, save_path, vad_list, interval=interval)
 
     if os.path.exists(dir_16000):
         shutil.rmtree(dir_16000)

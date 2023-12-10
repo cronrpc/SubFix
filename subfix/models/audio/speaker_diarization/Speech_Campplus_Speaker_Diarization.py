@@ -9,8 +9,8 @@ class Speech_Campplus_Speaker_Diarization():
             model_revision='v1.0.0'
         )
     
-    def infer(self, input, min_seconds = 0, **args):
-        result = self._pipeline(input, **args)['text']
+    def infer(self, input, min_seconds = 0, oracle_num = None, **args):
+        result = self._pipeline(input, oracle_num = oracle_num, **args)['text']
         count_dict = {}
         for item in result:
             if item[2] in count_dict:
