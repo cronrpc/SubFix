@@ -4,3 +4,4 @@ numpy
 soundfile
 torchaudio
 transformers
+openai-whisper
