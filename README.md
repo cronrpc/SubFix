@@ -21,7 +21,10 @@ conda create -n modelscope python=3.9
 conda activate modelscope
 ```
 
-Installing Dependencies:
+Installing Dependencies
+
+#### In a Linux environment
+
 ```bash
 sudo apt install build-essential
 sudo apt install ffmpeg
@@ -32,6 +35,19 @@ cd SubFix
 pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
 pip install -e .
 ```
+
+#### In a Windows environment
+
+If you have a GPU, you need to install the `cuda` version of `pytorch` beforehand and configure environment variables such as `ffmpeg`. Then execute the following commands:
+
+```bash
+git clone https://github.com/cronrpc/SubFix.git
+cd SubFix
+pip install "modelscope[audio_asr]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+pip install -e .
+```
+
+For information on installing pytorch, please visit(https://pytorch.org/get-started/locally/)
 
 ## Usage Guide
 

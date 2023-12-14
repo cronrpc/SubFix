@@ -23,6 +23,8 @@ conda activate modelscope
 
 安装依赖
 
+#### 在`Linux`环境
+
 ```bash
 sudo apt install build-essential
 sudo apt install ffmpeg
@@ -33,6 +35,19 @@ cd SubFix
 pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
 pip install -e .
 ```
+
+#### 在`Windows`环境
+
+如果有gpu，需要提前安装`pytorch`的`cuda`版本，配置`ffmpeg`等环境变量，之后执行下列命令
+
+```bash
+git clone https://github.com/cronrpc/SubFix.git
+cd SubFix
+pip install "modelscope[audio_asr]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+pip install -e .
+```
+
+关于`pytorch`安装，请访问(https://pytorch.org/get-started/locally/)
 
 ## 使用指南
 
