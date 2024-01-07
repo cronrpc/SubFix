@@ -56,7 +56,7 @@ def cli():
     parser_webui.add_argument('--json_key_path', default="wav_path", type=str, help='the path key name in json, Default: wav_path')
     parser_webui.add_argument('--g_batch', default=10, type=int, help='max number g_batch wav to display, Default: 10')
     parser_webui.add_argument('--webui_language', default="en", type=str, help='webui language: en or zh, Default: en')
-    parser_webui.add_argument('--force_delete', default="True", type=str, help='delete file in disk while delete items, True or False, Default: False')
+    parser_webui.add_argument('--force_delete', default="True", type=str, help='delete file in disk while delete items, True or False, Default: True')
     parser_webui.set_defaults(func=handle_webui)
     
 
