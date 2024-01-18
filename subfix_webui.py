@@ -9,6 +9,18 @@ import gradio as gr
 import numpy as np
 import soundfile
 
+
+"""
+Apache License
+Version 2.0, January 2004
+https://www.apache.org/licenses/LICENSE-2.0
+
+SubFix
+cronrpc
+https://github.com/cronrpc/SubFix
+"""
+
+
 g_json_key_text = ""
 g_json_key_path = ""
 g_load_file = ""
@@ -22,6 +34,7 @@ g_audio_list = []
 g_checkbox_list = []
 g_data_json = []
 g_language = None
+
 
 SUBFIX_LANG_CONFIG_MAP = {
     "zh": {

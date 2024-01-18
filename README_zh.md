@@ -5,7 +5,7 @@
 
 [English Version](README.md)
 
-旧版独立文件可以访问[Release V1.2](https://github.com/cronrpc/SubFix/releases/tag/v1.2)获取。
+独立的`.py`文件版本，可以通过[subfix_webui.py](https://github.com/cronrpc/SubFix/blob/main/subfix_webui.py)获取。该版本可以通过命令行参数来选择语言，支持英文和中文。同时可以选择在编辑时是否同步删除硬盘上的音频文件。
 
 ## 安装
 

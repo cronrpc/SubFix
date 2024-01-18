@@ -5,7 +5,7 @@
 
 [中文版本](README_zh.md)
 
-For the old standalone version, please visit [Release V1.2](https://github.com/cronrpc/SubFix/releases/tag/v1.2) to download.
+An standalone `.py` file version is available for access at [subfix_webui.py](https://github.com/cronrpc/SubFix/blob/main/subfix_webui.py). This version allows language selection through command-line parameters, supporting both English and Chinese. Additionally, users can choose whether to synchronize the deletion of audio files on the hard drive during editing.
 
 ## Installation
 
