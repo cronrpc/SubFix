@@ -14,7 +14,7 @@ URL = 'https://github.com/cronrpc/SubFix'
 EMAIL = 'cronrpc'
 AUTHOR = 'cronrpc'
 REQUIRES_PYTHON = '>=3.8.0'
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 REQUIRED = [
 ]
