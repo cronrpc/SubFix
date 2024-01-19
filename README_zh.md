@@ -7,6 +7,8 @@
 
 独立的`.py`文件版本，可以通过[subfix_webui.py](https://github.com/cronrpc/SubFix/blob/main/subfix_webui.py)获取。该版本可以通过命令行参数来选择语言，支持英文和中文。同时可以选择在编辑时是否同步删除硬盘上的音频文件。
 
+单独Python文件版本的使用方法，可访问：[subfix_webui.py 帮助](#subfix_webuipy)
+
 ## 安装
 
 进行如下安装步骤可以快速而轻松的安装。建议使用`Linux`环境。如果是`Windows`环境，需要您手动配置`ffmpeg`环境变量，并且`modelscope`的安装可能比较复杂。
@@ -160,6 +162,36 @@ subfix create modelscope --source_dir diarization --language ZH
 ```bash
 subfix format_convert --source demo.list --target demo.json
 subfix format_convert --source demo.json --target demo.list
+```
+
+## subfix_webui.py
+
+单独Python文件版本的使用方法：
+
+查看帮助
+
+```bash
+python subfix_webui.py -h
+```
+
+中文启动
+
+```bash
+python subfix_webui.py --webui_language zh --load_list demo.list
+```
+
+指定`.list`文件
+
+```bash
+python subfix_webui.py --load_list demo.list
+```
+
+同步删除磁盘文件，默认值是True。
+
+```bash
+python subfix_webui.py --force_delete True
+# or
+python subfix_webui.py --force_delete False
 ```
 
 ## References

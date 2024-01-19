@@ -528,7 +528,7 @@ def subfix_startwebui(args):
             ],
         )
         
-    demo.launch()
+    demo.launch(server_port = args.server_port)
 
 
 if __name__ == "__main__":
@@ -540,9 +540,10 @@ if __name__ == "__main__":
     parser_subfix_webui.add_argument('--g_batch', default=10, help='max number g_batch wav to display, Default: 10')
     parser_subfix_webui.add_argument('--webui_language', default="en", type=str, help='webui language: en or zh, Default: en')
     parser_subfix_webui.add_argument('--force_delete', default="True", type=str, help='delete file in disk while delete items, True or False, Default: True')
+    parser_subfix_webui.add_argument('--server_port', default=7860, type=int, help='the webui port, Default: 7860')
 
     parser_subfix = parser_subfix_webui.parse_args()
 
-    parser_subfix.force_delete = parser_subfix.force_delete == "True"
+    parser_subfix.force_delete = (parser_subfix.force_delete.upper() == "TRUE")
 
     subfix_startwebui(parser_subfix)

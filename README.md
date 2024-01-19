@@ -7,6 +7,8 @@
 
 An standalone `.py` file version is available for access at [subfix_webui.py](https://github.com/cronrpc/SubFix/blob/main/subfix_webui.py). This version allows language selection through command-line parameters, supporting both English and Chinese. Additionally, users can choose whether to synchronize the deletion of audio files on the hard drive during editing.
 
+Usage instructions for the standalone Python file version can be found at: [subfix_webui.py Help](#subfix_webuipy)
+
 ## Installation
 
 Follow these steps for a quick and easy installation. It's recommended to use a `Linux` environment. If using `Windows`, you will need to manually configure the `ffmpeg` environment variable, and installing `modelscope` might be more complex.
@@ -158,6 +160,37 @@ The two formats, `.list` and `.json`, can be converted into each other. Use the 
 ```bash
 subfix format_convert --source demo.list --target demo.json
 subfix format_convert --source demo.json --target demo.list
+```
+
+## subfix_webui.py
+
+
+Usage of the standalone Python file version:
+
+View Help
+
+```bash
+python subfix_webui.py -h
+```
+
+Launch in Chinese
+
+```bash
+python subfix_webui.py --webui_language zh --load_list demo.list
+```
+
+Specify a `.list` File
+
+```bash
+python subfix_webui.py --load_list demo.list
+```
+
+Synchronize deletion of disk files, the default value is True.
+
+```bash
+python subfix_webui.py --force_delete True
+# or
+python subfix_webui.py --force_delete False
 ```
 
 ## References
