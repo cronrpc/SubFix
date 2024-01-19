@@ -193,6 +193,12 @@ python subfix_webui.py --force_delete True
 python subfix_webui.py --force_delete False
 ```
 
+Launch with a specified port
+
+```bash
+python subfix_webui.py --server_port 1234
+```
+
 ## References
 
 - [anyvoiceai/MassTTS](https://github.com/anyvoiceai/MassTTS)
