@@ -86,7 +86,7 @@ def merge_audio_slice(source_audio, slice_dir, data_list, start_count, sample_ra
                 {
                     'sliced_audio_path' : sliced_audio_path,
                     'speaker_name' : speaker_name,
-                    'language' : 'language',
+                    'language' : language,
                     'text' : s_sentence
                 }
             )
@@ -110,7 +110,7 @@ def merge_audio_slice(source_audio, slice_dir, data_list, start_count, sample_ra
                 {
                     'sliced_audio_path' : sliced_audio_path,
                     'speaker_name' : speaker_name,
-                    'language' : 'language',
+                    'language' : language,
                     'text' : s_sentence
                 }
             )
