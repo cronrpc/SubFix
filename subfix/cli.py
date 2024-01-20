@@ -29,7 +29,7 @@ def handle_format_convert(args):
 
 def handle_webui(args):
     from .webui import startwebui
-    args.force_delete = args.force_delete == "True"
+    args.force_delete = (args.force_delete.upper() == "TRUE")
     startwebui(args)
 
 
@@ -76,6 +76,7 @@ def cli():
     modelscope_subparsers.add_argument("--language", type=str, default="ZH", help="Language, Default: ZH|JA|KO|EN|DE|RU")
     modelscope_subparsers.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
     modelscope_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
+    modelscope_subparsers.add_argument("--absolute_path", default="False", type=str, help='absolute_path True or False, Default: False')
     modelscope_subparsers.set_defaults(func=handle_create)
 
     # create whisper
@@ -89,6 +90,7 @@ def cli():
     whisper_subparsers.add_argument("--language", type=str, default="ZH", help="Any Language whisper support, Default: ZH")
     whisper_subparsers.add_argument("--output", type=str, default="demo.list", help="List file, Default: demo.list")
     whisper_subparsers.add_argument("--max_seconds", type=int, default=15, help="Max sliced voice length(seconds), Default: 15")
+    whisper_subparsers.add_argument("--absolute_path", default="False", type=str, help='absolute_path True or False, Default: False')
     whisper_subparsers.set_defaults(func=handle_create)
 
     # format_convert
