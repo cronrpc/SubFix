@@ -76,7 +76,7 @@ def merge_audio_slice(source_audio, slice_dir, data_list, start_count, sample_ra
             if language == "ZH" and re.search(r"[，]$", s_sentence):
                 s_sentence = s_sentence[:-1] + '。'
             if language == "ZH" and not ends_with_punctuation(s_sentence):
-                s_sentence = s_sentence + "。"
+                s_sentence = s_sentence
 
             audio_concat = np.concatenate(audio_list)
             if time_length > max_seconds:

@@ -10,6 +10,13 @@ def handle_diarization(args):
     pass
 
 
+def handle_punctuation(args):
+    assert(os.path.exists(args.load_list))
+    from subfix.solution.punctuation_multi_lang import punctuation_multi_lang_process
+    punctuation_multi_lang_process(args)
+    pass
+
+
 def handle_format_convert(args):
     from .format import FormatBertvits2, FormatJson
     print(os.path.splitext(args.source)[1])
@@ -112,6 +119,12 @@ def cli():
     parser_diarization.add_argument("--sample_rate", type=int, default=44100, help="Sample rate, Default: 44100")
     parser_diarization.add_argument("--oracle_num", type=int, default=0, help="oracle number, the person number you think maybe in audio, Default: 0")
     parser_diarization.set_defaults(func=handle_diarization)
+
+    # punctuation
+    parser_punctuation = subparsers.add_parser('punctuation', 
+                                          help='punctuation: punctuation -h')
+    parser_punctuation.add_argument('--load_list', default="demo.list", type=str, help='source file, like demo.list')
+    parser_punctuation.set_defaults(func=handle_punctuation)
 
     # run
     args = parser.parse_args()

@@ -9,7 +9,7 @@ class Punctuation_FunASR():
         res = self._model.generate(input=input)
         if (len(res) > 0):
             text = res[0]['text']
-            return res
+            return text
         else:
             return ""
         
