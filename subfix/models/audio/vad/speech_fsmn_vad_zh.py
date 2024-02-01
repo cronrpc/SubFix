@@ -14,10 +14,10 @@ class Speech_Fsmn_Vad_Zh_16k_Common():
         self._tolerance = 1e-6
 
     def infer(self, audio_in) -> None:
-        rec_result = self._inference_pipeline(audio_in = audio_in)
+        rec_result = self._inference_pipeline(audio_in)[0]
         # return [{start : seconds, end: seconds}]
         data = []
-        for item in rec_result['text']:
+        for item in rec_result['value']:
             start = item[0] / 1000.0
             end = item[1] / 1000.0
             duration = end - start
