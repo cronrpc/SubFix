@@ -162,7 +162,7 @@ subfix create --source_dir origin --output demo.list
 
 ### 给list文件添加标点符号
 
-如果要用标点符号，使用下面的命令，自动对了list文件中的文本添加标点符号。
+如果要用标点符号，使用下面的命令，自动对list文件中的文本添加标点符号。
 
 ```
 subfix punctuation --load_list demo.list
