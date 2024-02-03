@@ -38,6 +38,24 @@ pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.co
 pip install -e .
 ```
 
+#### 更新modelscope和FunASR到最新版本
+
+由于modelscope的API发生了改动，通过pip安装的代码未必是最新版本，可能存在无法运行自动标注的情况。
+
+这里建议是，可以直接安装最新Github仓库的modelscope和funASR到最新版本。
+
+```
+# 安装FunASR
+git clone https://github.com/alibaba/FunASR.git && cd FunASR
+pip3 install -e ./
+
+# 安装modelscope
+git clone https://github.com/modelscope/modelscope.git
+cd modelscope
+pip install -e .
+pip install -e .[audio]
+```
+
 #### 在`Windows`环境
 
 如果有gpu，需要提前安装`pytorch`的`cuda`版本，配置`ffmpeg`等环境变量，之后执行下列命令
@@ -141,6 +159,14 @@ subfix create --source_dir origin --output demo.list
 ```
 
 该命令将创建一个`dataset`目录，同时将所有文件转录的音频的路径和字幕存储到了`demo.list`文件中。
+
+### 给list文件添加标点符号
+
+如果要用标点符号，使用下面的命令，自动对了list文件中的文本添加标点符号。
+
+```
+subfix punctuation --load_list demo.list
+```
 
 ### 说话人识别、聚类
 

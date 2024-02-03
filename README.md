@@ -38,6 +38,24 @@ pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.co
 pip install -e .
 ```
 
+#### Updating modelscope and FunASR to the Latest Versions
+
+Due to recent changes in the modelscope API, the code installed via pip may not be the latest version, potentially causing issues with automatic annotation. 
+
+To ensure compatibility, it is recommended to install the latest version directly from the GitHub repository:
+
+```bash
+# Install FunASR
+git clone https://github.com/alibaba/FunASR.git && cd FunASR
+pip3 install -e ./
+
+# Install modelscope
+git clone https://github.com/modelscope/modelscope.git
+cd modelscope
+pip install -e .
+pip install -e .[audio]
+```
+
 #### In a Windows environment
 
 If you have a GPU, you need to install the `cuda` version of `pytorch` beforehand and configure environment variables such as `ffmpeg`. Then execute the following commands:
@@ -141,6 +159,14 @@ subfix create --source_dir origin --output demo.list
 ```
 
 This command will create a `dataset` directory and store the paths and subtitles of all transcribed audio files in the `demo.list` file.
+
+### Add Punctuation to List Files
+
+If you want to use punctuation, use the following command to automatically add punctuation to the text in the list file:
+
+```
+subfix punctuation --load_list demo.list
+```
 
 ### Speaker Recognition and Clustering
 
