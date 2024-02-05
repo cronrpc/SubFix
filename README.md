@@ -34,7 +34,7 @@ sudo apt install libsox-dev
 
 git clone https://github.com/cronrpc/SubFix.git
 cd SubFix
-pip install "modelscope[audio]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+pip install "modelscope[audio_asr]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
 pip install -e .
 ```
 
@@ -53,7 +53,7 @@ pip3 install -e ./
 git clone https://github.com/modelscope/modelscope.git
 cd modelscope
 pip install -e .
-pip install -e .[audio]
+pip install -e .[audio_asr]
 ```
 
 #### In a Windows environment
